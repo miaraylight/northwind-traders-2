@@ -1,12 +1,14 @@
 package com.northwind;
 
 import com.northwind.data.CustomerDao;
+import com.northwind.model.Customer;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class App {
     public static void main(String[] args) {
@@ -20,24 +22,9 @@ public class App {
 
         CustomerDao customerDao = new CustomerDao(dataSource);
 
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement =
-                     connection.prepareStatement(
-                             "SELECT CompanyName, ContactName FROM customers " +
-                                     "WHERE CompanyName LIKE ?");
-        ) {
-            preparedStatement.setString(1, "%ba%");
-            try (ResultSet resultSet = preparedStatement.executeQuery()
-            ) {
-                while (resultSet.next()) {
-                    System.out.printf("name = %s, name2 = %s;\n",
-                            resultSet.getString(1), resultSet.getString(2));
-                }
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
+        List<Customer> customers = customerDao.getAll();
+
+        System.out.println(customers);
 
     }
 }
