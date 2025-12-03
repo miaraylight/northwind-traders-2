@@ -1,5 +1,6 @@
 package com.northwind;
 
+import com.northwind.data.CustomerDao;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import java.sql.Connection;
@@ -16,6 +17,8 @@ public class App {
         dataSource.setUrl("jdbc:mysql://localhost:3306/northwind");
         dataSource.setUsername(args[0]);
         dataSource.setPassword(args[1]);
+
+        CustomerDao customerDao = new CustomerDao(dataSource);
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement =
