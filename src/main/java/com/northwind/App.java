@@ -1,14 +1,10 @@
 package com.northwind;
 
 import com.northwind.data.CustomerDao;
+import com.northwind.data.ProductDao;
 import com.northwind.model.Customer;
+import com.northwind.model.Product;
 import org.apache.commons.dbcp2.BasicDataSource;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
 
 public class App {
     public static void main(String[] args) {
@@ -21,10 +17,26 @@ public class App {
         dataSource.setPassword(args[1]);
 
         CustomerDao customerDao = new CustomerDao(dataSource);
+        ProductDao productDao = new ProductDao(dataSource);
 
-        List<Customer> customers = customerDao.getAll();
+//        List<Customer> customers = customerDao.getAll();
+//        Customer customerX = customerDao.find("WOLZA");
+//        System.out.println(customerX);
 
-        System.out.println(customers);
+        Product newProduct = new Product(
+                null,
+                "Test Product",   // ProductName (NOT NULL)
+                1,                // SupplierID (nullable)
+                1,                // CategoryID (nullable)
+                "10 boxes",       // QuantityPerUnit
+                15.50,            // UnitPrice
+                (short) 100,      // UnitsInStock
+                (short) 20,       // UnitsOnOrder
+                (short) 10,       // ReorderLevel
+                false             // Discontinued
+        );
+
+        System.out.println(productDao.create(newProduct));
 
     }
 }
