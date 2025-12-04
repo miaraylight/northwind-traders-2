@@ -36,7 +36,10 @@ public class App {
                 false             // Discontinued
         );
 
-        System.out.println(productDao.create(newProduct));
 
+        Product toUpd = productDao.add(newProduct);
+        toUpd.setProductName("Meow Meow");
+        System.out.println(productDao.update(toUpd));
+        System.out.println("Product deleted? " + productDao.deleteById(toUpd.getProductId()));
     }
 }

@@ -83,7 +83,7 @@ public class ProductDao {
     }
 
     // create
-    public Product create(Product product) {
+    public Product add(Product product) {
         String query = """
         INSERT INTO products
             (ProductName, SupplierID, CategoryID, QuantityPerUnit,
@@ -119,5 +119,61 @@ public class ProductDao {
         }
 
         return product;
+    }
+
+    public Product update(Product product) {
+        String query = """
+        UPDATE products
+        SET ProductName = ?,
+            SupplierID = ?,
+            CategoryID = ?,
+            QuantityPerUnit = ?,
+            UnitPrice = ?,
+            UnitsInStock = ?,
+            UnitsOnOrder = ?,
+            ReorderLevel = ?,
+            Discontinued = ?
+        WHERE ProductID = ?
+        """;
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, product.getProductName());
+            preparedStatement.setObject(2, product.getSupplierId());
+            preparedStatement.setObject(3, product.getCategoryId());
+            preparedStatement.setString(4, product.getQuantityPerUnit());
+            preparedStatement.setDouble(5, product.getUnitPrice());
+            preparedStatement.setShort(6, product.getUnitsInStock());
+            preparedStatement.setShort(7, product.getUnitsOnOrder());
+            preparedStatement.setShort(8, product.getReorderLevel());
+            preparedStatement.setBoolean(9, product.getDiscontinued());
+            preparedStatement.setInt(10, product.getProductId()); // WHERE clause
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return product;
+    }
+
+    // delete
+    public boolean deleteById(int id) {
+        String query = "DELETE FROM products WHERE ProductID = ?";
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, id);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
